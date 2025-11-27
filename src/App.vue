@@ -1,4 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
 
-<template></template>
+import { UseStack } from '@/composables/demos';
+</script>
+
+<template>
+  <h2>useStack</h2>
+  <UseStack />
+</template>
 
