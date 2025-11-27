@@ -12,7 +12,6 @@ const {
 } = useStack([1, 2, 3]);
 
 const payload = ref<number>(1);
-
 </script>
 
 <template>
@@ -26,7 +25,7 @@ const payload = ref<number>(1);
         Pop
       </button>
       <p>
-        IsOnTop: {{ isOnTop(payload) }}
+        IsOnTop: {{ isOnTop(payload) || 'empty' }}
       </p>
     </div>
     <p>
