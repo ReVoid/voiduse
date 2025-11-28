@@ -8,21 +8,28 @@ import {
 import {
   isEqual,
   last,
+  remove as _remove,
 } from 'lodash-es';
 
 export function useStack<T>(initial: T[]) {
-  const stack = ref<T[]>(initial) as Ref<T[]>;
+  const items = ref<T[]>(initial) as Ref<T[]>;
 
-  const top = computed<T | undefined>(() => last(stack.value));
+  const top = computed<T | undefined>(() => last(items.value));
 
-  const isEmpty = computed<boolean>(() => stack.value.length === 0);
+  const isEmpty = computed<boolean>(() => items.value.length === 0);
 
   function push(...value: T[]): void {
-    stack.value.push(...value);
+    items.value.push(...value);
   }
 
   function pop(): T | undefined {
-    return stack.value.pop();
+    return items.value.pop();
+  }
+
+  function remove(item?: T ): void {
+    if (item) {
+      _remove(items.value, (i) => isEqual(i, item));
+    }
   }
 
   function isOnTop(value: T): boolean {
@@ -30,11 +37,12 @@ export function useStack<T>(initial: T[]) {
   }
 
   return {
-    stack: readonly(stack),
+    items: readonly(items),
     top: readonly(top),
     isEmpty,
     isOnTop,
     push,
     pop,
+    remove,
   }
 }

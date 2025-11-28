@@ -4,11 +4,12 @@ import { ref } from 'vue';
 import { useStack } from '../../composables';
 
 const {
-  stack,
+  items,
   top,
   isOnTop,
   push,
   pop,
+  remove,
 } = useStack([1, 2, 3]);
 
 const payload = ref<number>(1);
@@ -24,15 +25,18 @@ const payload = ref<number>(1);
       <button @click="pop">
         Pop
       </button>
+      <button @click="remove(payload)">
+        Remove
+      </button>
       <p>
         IsOnTop: {{ isOnTop(payload) || 'empty' }}
       </p>
     </div>
     <p>
-      Stack: {{ stack.join(', ') }}
+      Stack: {{ items.length ? items : 'empty' }}
     </p>
     <p>
-      Top: {{ top ?? 'nothing' }}
+      Top: {{ top ?? 'empty' }}
     </p>
   </article>
 </template>
