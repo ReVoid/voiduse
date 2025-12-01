@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  UseLoading,
-  UseStack,
-  UsePagination,
-} from '@/composables/demos';
+import { UseLoading, UseStack, UsePagination, UseDefault } from '@/composables/demos';
 </script>
 
 <template>
@@ -11,7 +7,6 @@ import {
     <h2>useLoading.ts</h2>
     <UseLoading />
   </article>
-
 
   <article>
     <h2>useStack.ts</h2>
@@ -22,5 +17,9 @@ import {
     <h2>usePagination.ts</h2>
     <UsePagination />
   </article>
-</template>
 
+  <article>
+    <h2>useDefault.ts</h2>
+    <UseDefault />
+  </article>
+</template>
