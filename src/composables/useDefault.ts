@@ -3,7 +3,7 @@ import {
   unref,
   type Ref,
   type MaybeRef,
-  readonly,
+  computed,
 } from 'vue';
 
 import {
@@ -21,21 +21,31 @@ type Output<T> = T extends object
   : T;
 
 export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
-  const item = ref<Output<T>>(unref(defaultValue)) as Ref<Output<T>>;
+  const _item = ref<Output<T>>(unref(defaultValue)) as Ref<Output<T>>;
 
+  const item = computed<Output<T>, Partial<T>>({
+    get() {
+      return _item.value;
+    },
+    set(payload) {
+      update(payload);
+    },
+  });
+
+  // TODO: Check with array type
+  // Function to use because of template usage issues
   function update(payload: MaybeRef<Partial<T>>): void {
     if (isObject(payload)) {
-      item.value = merge({}, unref(defaultValue), payload);
+      _item.value = merge({}, unref(defaultValue), payload);
       return;
     }
 
     if (isUndefined(payload) || isNull(payload)) {
-      item.value = unref(defaultValue);
+      _item.value = unref(defaultValue);
       return;
     }
-    // TODO: Check with array type
 
-    item.value = payload;
+    _item.value = payload;
   }
 
   function reset(): void {
@@ -43,8 +53,8 @@ export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
   }
 
   return {
-    item: readonly(item),
-    update,
+    item,
     reset,
+    update,
   };
 }
