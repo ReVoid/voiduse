@@ -33,7 +33,17 @@ export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
   });
 
   // TODO: Check with array type
-  // Function to use because of template usage issues
+  /**
+   * Helper to avoid `computed` {@link https://github.com/vuejs/language-tools/issues/5793 issue} in `template` section.
+   * @example
+   * ```vue
+   * <template>
+   *   <button @click="update(payload)">
+   *     Update
+   *   </button>
+   * </template>
+   * ```
+   */
   function update(payload: MaybeRef<Partial<T>>): void {
     if (isObject(payload)) {
       _item.value = merge({}, unref(defaultValue), payload);
