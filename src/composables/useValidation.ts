@@ -1,34 +1,79 @@
-import { computed } from 'vue'
+import {
+  ref,
+  type MaybeRef,
+  computed,
+  readonly,
+  unref,
+} from 'vue';
 
-import { isArray } from '@sniptt/guards';
+import type {
+  Validators,
+  ValidationInfo,
+} from '@/composables/useValidation.types.ts';
 
-type Validator<T> = (value: T, message?: string) => boolean | string;
 
-type ValidatorGroup<T> = Validator<T>[];
-
-// TODO: Design and implement
-// DRAFT!
 export function useValidation<
   T extends object,
+  TValidators extends Validators<T>
 >(
-  form: Partial<T>,
-  validators: { [K in keyof T]: Validator<T[K]> | ValidatorGroup<T[K]> }
+  form: MaybeRef<T>,
+  validators: TValidators,
 ) {
-  const isValid = computed<boolean>(() => {
-    const fieldNames = Object.keys(validators) as (keyof typeof validators)[];
+  type FieldName = keyof TValidators & keyof T & string;
 
-    return fieldNames.every((name) => {
-      const fieldValidators = validators[name];
+  const isLoading = ref<boolean>(false);
 
-      if (isArray(fieldValidators)) {
-        return fieldValidators.every(v => v(form[name]!) === true)
-      } else {
-        return fieldValidators(form[name]!) === true;
-      }
-    });
+  type ValidationOutput = Record<FieldName, ValidationInfo>
+
+  // TODO: Remove type unsafe code
+  const validation = computed<ValidationOutput>(() => {
+    const fieldNames = Object.keys(validators) as FieldName[];
+
+    return fieldNames.reduce<ValidationOutput>((output, name) => {
+      const value = unref(form)[name];
+
+      const isValid: boolean = validators[name].every((validator) => validator(value) === true)
+
+      return Object.assign(output, {
+        [name]: {
+          isValid,
+          isInvalid: !isValid,
+          message: '',
+        },
+      });
+    }, {} as ValidationOutput);
   });
+
+  const isValid = computed<boolean>(() => {
+    const fieldNames = Object.keys(validation.value) as FieldName[];
+    return fieldNames.every((name) => validation.value[name].isValid);
+  });
+
+  const isInvalid = computed<boolean>(() => !isValid.value);
+
+  function validate(): Promise<never> extends ReturnType<typeof validators[keyof typeof validators][number]> ? Promise<boolean> : boolean {
+    throw new Error('validate is not implemented');
+  }
+
+  function reset(): void {
+    throw new Error('reset is not implemented');
+  }
+
+  function submit(): T | false {
+    return isValid.value
+      ? unref(form)
+      : false;
+  }
 
   return {
     isValid,
+    isInvalid,
+    isLoading: readonly(isLoading),
+    validation,
+    validate,
+    submit,
+    reset,
   }
 }
+
+
