@@ -11,6 +11,9 @@ import type {
   ValidationInfo,
 } from '@/composables/useValidation.types.ts';
 
+import { isString } from '@sniptt/guards';
+import { first } from 'lodash-es';
+
 
 export function useValidation<
   T extends object,
@@ -32,13 +35,17 @@ export function useValidation<
     return fieldNames.reduce<ValidationOutput>((output, name) => {
       const value = unref(form)[name];
 
-      const isValid: boolean = validators[name].every((validator) => validator(value) === true)
+      const outputs = validators[name].map((validator) => validator(value));
+
+      const isValid: boolean = outputs.every((v) => v === true)
+
+      const message: string = first(outputs.filter(isString)) ?? '';
 
       return Object.assign(output, {
         [name]: {
           isValid,
           isInvalid: !isValid,
-          message: '',
+          message,
         },
       });
     }, {} as ValidationOutput);
