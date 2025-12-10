@@ -18,19 +18,24 @@ import {
 
 type Output<T> = T extends object
   ? Required<T>
-  : T;
+  : NonNullable<T>;
 
+
+/**
+ * TODO: Docs
+ * @param defaultValue
+ */
 export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
-  const _item = ref<Output<T>>(unref(defaultValue)) as Ref<Output<T>>;
+  const _item = ref<Output<T>>(unref(defaultValue)) as Ref<Output<T>>
 
   const item = computed<Output<T>, Partial<T>>({
     get() {
-      return _item.value;
+      return _item.value
     },
     set(payload) {
-      update(payload);
+      update(payload)
     },
-  });
+  })
 
   // TODO: Check with array type
   /**
@@ -46,25 +51,25 @@ export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
    */
   function update(payload: MaybeRef<Partial<T>>): void {
     if (isObject(payload)) {
-      _item.value = merge({}, unref(defaultValue), payload);
-      return;
+      _item.value = merge({}, unref(defaultValue), payload)
+      return
     }
 
     if (isUndefined(payload) || isNull(payload)) {
-      _item.value = unref(defaultValue);
-      return;
+      _item.value = unref(defaultValue)
+      return
     }
 
-    _item.value = payload;
+    _item.value = payload
   }
 
   function reset(): void {
-    update(defaultValue);
+    update(defaultValue)
   }
 
   return {
     item,
     reset,
     update,
-  };
+  }
 }

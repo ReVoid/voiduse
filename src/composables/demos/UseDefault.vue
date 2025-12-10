@@ -23,10 +23,6 @@ const {
   firstName: 'Unknown',
   lastName: 'Unknown',
 });
-
-// TODO: Create an issue in Vue repository
-// It works in a script section, but it doesn't in a template for some reason
-// item.value = { lastName: 'Doe' };
 </script>
 
 <template>
@@ -58,7 +54,7 @@ const {
       Reset
     </button>
 
-    <!-- An error here -->
+    <!-- An error here! See `useDefault` docs. -->
     <!--
     <button @click="item = { lastName: 'Doe' }">
       Update partially issue
