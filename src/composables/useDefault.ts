@@ -16,19 +16,20 @@ import {
   merge,
 } from 'lodash-es';
 
-type Output<T> = T extends object
+type ConsistentOutput<T> = T extends object
   ? Required<T>
   : NonNullable<T>;
 
 
 /**
- * TODO: Docs
+ * TODO: Docs.
  * @param defaultValue
  */
-export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
-  const _item = ref<Output<T>>(unref(defaultValue)) as Ref<Output<T>>
+// TODO: Implement value argument as first argument.
+export function useDefault<T>(defaultValue: MaybeRef<ConsistentOutput<T>>) {
+  const _item = ref<ConsistentOutput<T>>(unref(defaultValue)) as Ref<ConsistentOutput<T>>
 
-  const item = computed<Output<T>, Partial<T>>({
+  const item = computed<ConsistentOutput<T>, Partial<T>>({
     get() {
       return _item.value
     },
@@ -51,20 +52,20 @@ export function useDefault<T>(defaultValue: MaybeRef<Output<T>>) {
    */
   function update(payload: MaybeRef<Partial<T>>): void {
     if (isObject(payload)) {
-      _item.value = merge({}, unref(defaultValue), payload)
-      return
+      _item.value = merge({}, unref(defaultValue), payload);
+      return;
     }
 
     if (isUndefined(payload) || isNull(payload)) {
-      _item.value = unref(defaultValue)
-      return
+      _item.value = unref(defaultValue);
+      return;
     }
 
-    _item.value = payload
+    _item.value = payload;
   }
 
   function reset(): void {
-    update(defaultValue)
+    update(defaultValue);
   }
 
   return {
