@@ -6,10 +6,11 @@ import {
 } from 'vue';
 
 // TODO: Implement it
+// TODO: Implement both resolving by value and key.
 export function useResolver<
   const TKey extends string | number | symbol,
   const TValue,
-  const TPredicate extends TKey
+  const TPredicate extends TKey,
 >(
   predicate: MaybeRef<TPredicate>,
   resolver: Record<TKey, TValue>,
