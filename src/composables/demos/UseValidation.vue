@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { useValidation } from '@/composables';
+import {
+  useValidation,
+} from '@/composables';
 
 type Form = {
   firstName: string;

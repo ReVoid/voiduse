@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { useStack } from '../../composables';
+import {
+  useStack,
+} from '@/composables';
 
 const {
   items,

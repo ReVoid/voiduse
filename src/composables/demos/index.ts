@@ -3,3 +3,4 @@ export { default as UseLoading } from './UseLoading.vue';
 export { default as UseStack } from './UseStack.vue';
 export { default as UseDefault } from './UseDefault.vue';
 export { default as UseValidation } from './UseValidation.vue';
+export { default as UseSize  } from './UseSize.vue';

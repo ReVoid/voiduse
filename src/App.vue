@@ -4,7 +4,7 @@ import {
   UseStack,
   UsePagination,
   UseDefault,
-  UseValidation,
+  UseValidation, UseSize,
 } from '@/composables/demos';
 </script>
 
@@ -33,4 +33,6 @@ import {
     <h2>useValidation.ts</h2>
     <UseValidation />
   </article>
+
+  <UseSize />
 </template>

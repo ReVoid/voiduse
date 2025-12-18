@@ -9,7 +9,7 @@ export function useLoading() {
 
   const isLoading = computed<boolean>(() => count.value > 0);
 
-  function showUntil<T extends Promise<any>>(process: T): T {
+  function showUntil<T extends Promise<unknown>>(process: T): T {
       count.value++;
       process.finally(() => count.value--);
       return process;
