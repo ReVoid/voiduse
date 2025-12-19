@@ -10,6 +10,10 @@ import {
   isFunction,
 } from '@vue/shared';
 
+import {
+  useLoading,
+} from '@/composables';
+
 
 type PaginatedData<T> = {
     items: T[];
@@ -91,7 +95,7 @@ export function usePagination<T>(source: Source<T>, options?: Options) {
     const total = ref<number>(0);
 
     // TODO: Add the optional min timeout to prevent flickering
-    const isLoading = ref<boolean>(false);
+    const loading = useLoading();
 
     const hasPages = computed<boolean>(() => {
         return count.value > 1;
@@ -159,12 +163,7 @@ export function usePagination<T>(source: Source<T>, options?: Options) {
     // TODO: Prevent promise racing
     async function execute(payload: Params): Promise<PaginatedData<T>> {
         if (isFunction(source)) {
-            try {
-                isLoading.value = true;
-                return await source(payload.page, payload.size);
-            } finally {
-                isLoading.value = false;
-            }
+          return await loading.showUntil(source(payload.page, payload.size));
         }
 
         return {
@@ -193,7 +192,7 @@ export function usePagination<T>(source: Source<T>, options?: Options) {
 
     return {
         items: readonly(items),
-        isLoading: readonly(isLoading),
+        isLoading: readonly(loading.isLoading),
         page,
         size,
         sizes,
