@@ -1,4 +1,14 @@
-import { computed, type ComputedRef, type MaybeRef, unref } from 'vue';
+import {
+  computed,
+  type ComputedRef,
+  type MaybeRef,
+  unref,
+} from 'vue';
+
+import {
+  isString,
+  isNumber,
+} from '@sniptt/guards';
 
 type Unit = 'px' | '%' | 'em' | 'rem' | 'vh' | 'vw';
 
@@ -30,8 +40,12 @@ export function useSize(size: MaybeRef<SizeRaw>): UseSizeReturn {
     const expression = new RegExp(`^(-?\\d+(?:\\.\\d+)?)(${UNITS})?$`);
     const [, value = undefined, unit = 'px'] = expression.exec(payload.toString()) || [];
 
-    if (value && Number(value) > 0) {
-      return `${value as unknown as number}${unit as Unit}`;
+    if (isNumber(value)) {
+      return `${value}${unit as Unit}`;
+    }
+
+    if (isString(value)) {
+      return `${parseInt(value)}${unit as Unit}`;
     }
 
     return 'auto' satisfies Size;
