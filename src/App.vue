@@ -4,7 +4,9 @@ import {
   UseStack,
   UsePagination,
   UseDefault,
-  UseValidation, UseSize,
+  UseValidation,
+  UseSize,
+  UseLocale,
 } from '@/composables/demos';
 </script>
 
@@ -35,4 +37,6 @@ import {
   </article>
 
   <UseSize />
+
+  <UseLocale />
 </template>
