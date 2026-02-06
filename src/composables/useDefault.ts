@@ -1,13 +1,25 @@
-import { ref, unref, type Ref, type MaybeRef, computed } from 'vue';
+import {
+  ref,
+  unref,
+  computed,
+  type Ref,
+  type MaybeRef,
+} from 'vue';
 
-import { isObject, isUndefined, isNull } from '@sniptt/guards';
+import {
+  isObject,
+  isUndefined,
+  isNull,
+} from '@sniptt/guards';
 
 import { merge } from 'lodash-es';
 
-type ConsistentOutput<T> = T extends object ? Required<T> : NonNullable<T>;
+type ConsistentOutput<T> = T extends object
+  ? Required<T>
+  : NonNullable<T>;
 
 /**
- * Consistent object with default values and flexible API.
+ * Safe value with default fallback and flexible API.
  *
  * @example
  * ```ts
@@ -16,6 +28,9 @@ type ConsistentOutput<T> = T extends object ? Required<T> : NonNullable<T>;
  *
  * // Changing normally
  * item.value = { name: 'John', salary: 1000 };
+ *
+ * // Changing with no explicit values
+ * item.value = { name: 'Jack' }; // { name: 'Jack', salary: 1000 }
  *
  * // Changing with blank values
  * item.value = { name: 'Jane', salary: undefined }; // { name: 'Jane', salary: 0 }

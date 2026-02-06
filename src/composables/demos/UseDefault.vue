@@ -6,13 +6,13 @@ import {
 } from '@/composables';
 
 type Person = {
-  firstName: string;
-  lastName: string;
+  name: string;
+  age: number;
 };
 
 const person = ref<Person>({
-  firstName: 'John',
-  lastName: 'Doe',
+  name: 'John',
+  age: 36,
 });
 
 const {
@@ -20,8 +20,8 @@ const {
   reset,
   update,
 } = useDefault({
-  firstName: 'Unknown',
-  lastName: 'Unknown',
+  name: 'Unknown',
+  age: 0,
 });
 </script>
 
@@ -32,8 +32,8 @@ const {
         Update with:
       </strong>
       <form novalidate @submit.prevent>
-        <input v-model="person.firstName">
-        <input v-model="person.lastName">
+        <input v-model="person.name" type="text">
+        <input v-model.number="person.age" type="number">
       </form>
     </div>
     <p>
@@ -47,7 +47,7 @@ const {
     <button @click="item = person">
       Update
     </button>
-    <button @click="update({ lastName: 'Doe' })">
+    <button @click="update({ name: 'Jane' })">
       Update partially
     </button>
     <button @click="reset">
