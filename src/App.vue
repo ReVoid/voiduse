@@ -8,6 +8,7 @@ import {
   UseSize,
   UseLocale,
 } from '@/composables/demos';
+import UseList from '@/composables/demos/UseList.vue';
 </script>
 
 <template>
@@ -39,4 +40,6 @@ import {
   <UseSize />
 
   <UseLocale />
+
+  <UseList />
 </template>
