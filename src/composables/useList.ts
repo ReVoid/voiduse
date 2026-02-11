@@ -13,11 +13,14 @@ import {
 
 import {
   isArray,
+  isUndefined,
 } from '@sniptt/guards';
 
 type Comparator<T> = (a: T, b: T) => boolean;
 
 // TODO: Add docs.
+// TODO: Add null & undefined support with types to make API more flexible.
+// TODO: Add shallowRef support.
 export function useList<T>(comparator: Comparator<T> = isEqual) {
   const items = ref<T[]>([]) as Ref<T[]>; // Inevitable casting. Do not remove.
 
@@ -63,6 +66,27 @@ export function useList<T>(comparator: Comparator<T> = isEqual) {
     items.value = [];
   }
 
+  function isFirst(value: T): boolean {
+    if (isUndefined(first.value)) {
+      return false;
+    }
+
+    return comparator(first.value, value);
+  }
+
+  function isLast(value: T): boolean {
+    if (isUndefined(last.value)) {
+      return false;
+    }
+
+    return comparator(last.value, value);
+  }
+
+  // TODO: Implement flexible update
+  function update(): void {
+    throw new Error('useList().update() is not implemented yet.');
+  }
+
   return {
     items: readonly(items),
     first,
@@ -71,7 +95,10 @@ export function useList<T>(comparator: Comparator<T> = isEqual) {
     add,
     remove,
     replace,
+    update,
     clear,
     includes,
+    isFirst,
+    isLast,
   };
 }

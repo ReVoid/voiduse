@@ -7,8 +7,8 @@ import {
   UseValidation,
   UseSize,
   UseLocale,
+  UseList,
 } from '@/composables/demos';
-import UseList from '@/composables/demos/UseList.vue';
 </script>
 
 <template>

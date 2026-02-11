@@ -5,3 +5,4 @@ export { default as UseDefault } from './UseDefault.vue';
 export { default as UseValidation } from './UseValidation.vue';
 export { default as UseSize } from './UseSize.vue';
 export { default as UseLocale } from './UseLocale.vue';
+export { default as UseList } from './UseList.vue';
