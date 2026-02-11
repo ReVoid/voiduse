@@ -25,6 +25,8 @@ export function useList<T>(comparator: Comparator<T> = isEqual) {
 
   const last = computed<T | undefined>(() => _last(items.value));
 
+  const isEmpty = computed<boolean>(() => items.value.length === 0);
+
   function add(values: T[] | T): void {
     const payload: T[] = isArray(values)
       ? values
@@ -63,8 +65,9 @@ export function useList<T>(comparator: Comparator<T> = isEqual) {
 
   return {
     items: readonly(items),
-    first: readonly(first),
-    last: readonly(last),
+    first,
+    last,
+    isEmpty,
     add,
     remove,
     replace,

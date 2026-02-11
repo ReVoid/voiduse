@@ -9,6 +9,7 @@ import {
 
 const {
   items,
+  isEmpty,
   add,
   remove,
   replace,
@@ -44,7 +45,7 @@ const replacement = ref<string>('Jane');
       <input v-model="replacement" type="text" />
 
       <button
-        :disabled="includes(replacement) || items.length === 0"
+        :disabled="isEmpty || (includes(replacement) || !includes(payload))"
         @click="replace(payload, replacement)"
       >
         Replace
