@@ -1,6 +1,12 @@
-import { computed, ref, watch } from 'vue';
+import {
+  ref,
+  computed,
+  watch,
+} from 'vue';
 
-import { useLoading } from '@/composables';
+import {
+  useLoading,
+} from '@/composables';
 
 // TODO: Add all languages
 type Locale =
@@ -10,18 +16,51 @@ type Locale =
 
 type Locales = Locale[];
 
+type Language = Locale extends `${infer Language}-${string}`
+  ? Language
+  : never;
+
+type Languages = Language[];
+
+type Region = Locale extends `${string}-${infer Region}`
+  ? Region
+  : never;
+
+type Regions = Region[];
+
+
 // TODO: Design & implement
 export function useLocale() {
-  const locales = ref<Locales>(['en-US', 'en-GB', 'ru-RU']);
-
   const locale = ref<Locale>('en-US');
 
-  const names = computed(() => {
-    const [ code = 'en' ] = locale.value.split('-');
+  const locales = ref<Locales>(['en-US', 'en-GB', 'ru-RU']);
 
-    return new Intl.DisplayNames([code], {
-      type: 'language',
-    }).of(code);
+  const language = computed<Language>(() => {
+    const [language] = locale.value.split('-');
+    return language as Language;
+  });
+
+  const languages = computed<Languages>(() => {
+    return locales.value.map((locale) => {
+      const [language] = locale.split('-');
+      return language as Language;
+    });
+  });
+
+  const region = computed<Region>(() => {
+    const [, region] = locale.value.split('-');
+    return region as Region;
+  });
+
+  const regions = computed<Regions>(() => {
+    return locales.value.map((locale) => {
+      const [, region] = locale.split('-');
+      return region as Region;
+    });
+  });
+
+  const script = computed<string>(() => {
+    throw new Error('Not implemented yet.');
   });
 
   // TODO: Make it global
@@ -32,9 +71,12 @@ export function useLocale() {
   }, { immediate: true });
 
   return {
-    locales,
     locale,
-    names,
+    locales,
+    language,
+    languages,
+    region,
+    regions,
     isLoading,
   };
 }
