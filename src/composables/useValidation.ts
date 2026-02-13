@@ -9,7 +9,7 @@ import {
 import type {
   Validators,
   ValidationInfo,
-} from '@/composables/useValidation.types.ts';
+} from '../composables/useValidation.types.ts';
 
 import { isString } from '@sniptt/guards';
 import { first } from 'lodash-es';
