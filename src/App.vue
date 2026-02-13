@@ -8,7 +8,7 @@ import {
   UseSize,
   UseLocale,
   UseList,
-} from '@/composables/demos';
+} from './composables/demos';
 </script>
 
 <template>

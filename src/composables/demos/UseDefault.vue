@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {
+  ref,
+} from 'vue';
 
 import {
   useDefault,
-} from '@/composables';
+} from '../../composables';
 
 type Person = {
   name: string;

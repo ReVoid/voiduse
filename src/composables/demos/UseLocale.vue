@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { useLocale } from '@/composables';
+import {
+  useLocale,
+} from '../../composables';
 
-const { locales, locale } = useLocale();
+const {
+  locales,
+  locale,
+} = useLocale();
 </script>
 <template>
   <article>

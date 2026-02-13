@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   useLoading,
-} from '@/composables';
+} from '../../composables';
 
 const {
   isLoading,

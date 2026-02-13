@@ -6,7 +6,7 @@ import {
 
 import {
   useLoading,
-} from '@/composables';
+} from '../composables';
 
 // TODO: Add all languages
 type Locale =

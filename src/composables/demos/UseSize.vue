@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {
+  ref,
+} from 'vue';
 
-import { useSize } from '@/composables';
+import {
+  useSize,
+} from '../../composables';
 
 type Size = {
   width: number | string;

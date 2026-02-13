@@ -5,7 +5,7 @@ import {
 
 import {
   useList,
-} from '@/composables';
+} from '../../composables';
 
 const {
   items,

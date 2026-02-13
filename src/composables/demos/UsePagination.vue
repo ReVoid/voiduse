@@ -3,7 +3,7 @@ import { onMounted } from 'vue';
 
 import {
   usePagination,
-} from '@/composables';
+} from '../../composables';
 
 const pagination = usePagination<number>((page, size) => {
   const DATA: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
