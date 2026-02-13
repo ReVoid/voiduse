@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useLocale } from '@/composables';
 
-const { locales, locale, names } = useLocale();
+const { locales, locale } = useLocale();
 </script>
 <template>
   <article>
@@ -13,7 +13,6 @@ const { locales, locale, names } = useLocale();
     </select>
     <p>
       Selected: {{ locale }}
-      {{ names }}
     </p>
   </article>
 </template>
