@@ -6,14 +6,14 @@ import {
   readonly,
   watch,
 } from 'vue';
+
 import {
   isFunction,
-} from '@vue/shared';
+} from '@sniptt/guards';
 
 import {
   useLoading,
-} from '@/composables';
-
+} from '../composables';
 
 type PaginatedData<T> = {
     items: T[];
