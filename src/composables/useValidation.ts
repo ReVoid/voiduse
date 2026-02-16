@@ -11,7 +11,7 @@ import {
 import type {
   Validators,
   ValidationInfo,
-} from '@/composables/useValidation.types.ts';
+} from '../composables/useValidation.types.ts';
 
 import {
   first,
