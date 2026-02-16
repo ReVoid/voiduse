@@ -9,7 +9,7 @@ export type Message =
 
 export type ValidatorGroup<T> = Validator<T>[];
 
-export type Validators<T extends object> = {
+export type Validators<T extends Record<string, unknown>> = {
   [K in keyof T]: ValidatorGroup<T[K]>;
 }
 

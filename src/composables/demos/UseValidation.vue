@@ -10,7 +10,7 @@ import {
 type Form = {
   firstName: string;
   lastName: string;
-}
+};
 
 const form = ref<Form>({
   firstName: '',
@@ -26,8 +26,14 @@ const {
 } = useValidation(form, {
   firstName: [
     (value) => value.trim().length >= 1 || 'This field is required',
-    (value) => value.trim().length >= 3 || `You entered ${value.length} less then 3 characters`,
-    (value) => value.trim().length <= 6 || `You entered ${value.length} more than 6 characters`
+    (value) => value.trim().length >= 3 || `You entered ${3 - value.length} less then 3 characters`,
+    (value) =>
+      new Promise((resolve) =>
+        setTimeout(() => {
+          const isValid: boolean = value.trim().length <= 6;
+          resolve(isValid ? true : `You entered ${6 - value.length} more than 6 characters`);
+        }, 3000),
+      ),
   ],
   lastName: [(value) => value.trim().length >= 1 || 'This field is also required'],
 });
@@ -40,7 +46,7 @@ function onSubmit(): void {
     return console.log(`${output} has been successfully submitted`);
   }
 
-  return console.log('Something went wrong');
+  return console.error('Something went wrong');
 }
 </script>
 
@@ -80,4 +86,3 @@ function onSubmit(): void {
     </div>
   </form>
 </template>
-

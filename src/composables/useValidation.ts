@@ -1,22 +1,29 @@
 import {
-  ref,
   type MaybeRef,
   computed,
-  readonly,
   unref,
 } from 'vue';
+
+import {
+  useLoading,
+} from '../composables';
 
 import type {
   Validators,
   ValidationInfo,
 } from '@/composables/useValidation.types.ts';
 
-import { isString } from '@sniptt/guards';
-import { first } from 'lodash-es';
+import {
+  first,
+} from 'lodash-es';
+
+import {
+  isString,
+} from '@sniptt/guards';
 
 
 export function useValidation<
-  T extends object,
+  T extends Record<string, unknown>,
   TValidators extends Validators<T>
 >(
   form: MaybeRef<T>,
@@ -24,7 +31,9 @@ export function useValidation<
 ) {
   type FieldName = keyof TValidators & keyof T & string;
 
-  const isLoading = ref<boolean>(false);
+  const {
+    isLoading,
+  } = useLoading();
 
   type ValidationOutput = Record<FieldName, ValidationInfo>
 
@@ -75,7 +84,7 @@ export function useValidation<
   return {
     isValid,
     isInvalid,
-    isLoading: readonly(isLoading),
+    isLoading,
     validation,
     validate,
     submit,
