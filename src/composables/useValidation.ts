@@ -22,14 +22,11 @@ import {
 } from '@sniptt/guards';
 
 
-export function useValidation<
-  T extends Record<string, unknown>,
-  TValidators extends Validators<T>
->(
+export function useValidation<T extends Record<string, unknown>>(
   form: MaybeRef<T>,
-  validators: TValidators,
+  validators: Validators<T>,
 ) {
-  type FieldName = keyof TValidators & keyof T & string;
+  type FieldName = keyof typeof validators;
 
   const {
     isLoading,
