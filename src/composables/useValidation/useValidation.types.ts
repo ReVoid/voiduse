@@ -1,8 +1,5 @@
 
-export type Message =
-  | string
-  | { success?: string; error?: string; pending?: string }
-
+export type Message = string;
  export type Validator<T> = (
    value: T,
  ) => boolean | Message | Promise<boolean | Message>;

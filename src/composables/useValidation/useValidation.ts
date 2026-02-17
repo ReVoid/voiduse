@@ -1,7 +1,9 @@
 import {
   ref,
+  readonly,
   type Ref,
   computed,
+  watch,
 } from 'vue';
 
 import {
@@ -19,7 +21,6 @@ import {
 
 import {
   isString,
-  isBoolean,
 } from '@sniptt/guards';
 
 
@@ -29,6 +30,7 @@ export function useValidation<T extends Record<string, unknown>>(
 ) {
   const {
     isLoading,
+    showUntil,
   } = useLoading();
 
   type FieldName = keyof typeof validators;
@@ -39,36 +41,20 @@ export function useValidation<T extends Record<string, unknown>>(
 
   const keys = computed<FieldName[]>(() => Object.keys(validators) as FieldName[]);
 
-  const validation = computed<ValidationOutput>(() => {
-    return keys.value.reduce<ValidationOutput>((output, name) => {
-      const value = form.value[name];
-
-      const outputs = validators[name].map((validator) => validator(value));
-
-      const isValid: boolean = outputs.every((v) => {
-        if (isBoolean(v)) {
-          return v;
-        }
-
-        if (isString(v)) {
-          return false;
-        }
-
-        // TODO: Implement promise resolving
-      });
-
-      const message: string = first(outputs.filter(isString)) ?? '';
-
+  const VALIDATION_BLANK = computed<ValidationOutput>(() => {
+    return keys.value.reduce((output, name) => {
       return Object.assign(output, {
         [name]: {
-          isValid,
-          isInvalid: !isValid,
-          isPending: false, // TODO: Implement it
-          message,
+          isValid: false,
+          isInvalid: false,
+          isPending: false,
+          message: '',
         },
       });
     }, {} as ValidationOutput);
   });
+
+  const validation = ref<ValidationOutput>(VALIDATION_BLANK.value);
 
   const isValid = computed<boolean>(() => {
     return keys.value.every((name) => validation.value[name].isValid);
@@ -76,12 +62,50 @@ export function useValidation<T extends Record<string, unknown>>(
 
   const isInvalid = computed<boolean>(() => !isValid.value);
 
-  function validate(): Promise<never> extends ReturnType<typeof validators[keyof typeof validators][number]> ? Promise<boolean> : boolean {
-    throw new Error('validate is not implemented');
+  // Promise<never> extends ReturnType<typeof validators[keyof typeof validators][number]> ? Promise<boolean> : boolean
+  async function validateField(name: FieldName) {
+    const value = form.value[name];
+
+    try {
+      validation.value[name].isPending = true;
+
+      const results = await showUntil((async () => {
+        const output: Array<boolean | string> = [];
+
+        for (const validator of validators[name]) {
+          const res = await validator(value);
+
+          output.push(res);
+
+          if (res !== true) {
+            break;
+          }
+        }
+
+        return output;
+      })());
+
+      const isValid: boolean = results.every((v) => v === true);
+
+      const messages: string[] = results.filter(isString);
+
+      validation.value[name] = {
+        isValid,
+        isInvalid: !isValid,
+        isPending: false,
+        message: first(messages) ?? '',
+      };
+    } catch {
+      validation.value[name] = VALIDATION_BLANK.value;
+    }
+  }
+
+  function validate() {
+    keys.value.forEach(validateField);
   }
 
   function reset(): void {
-    throw new Error('reset is not implemented');
+    validation.value = VALIDATION_BLANK.value;
   }
 
   function submit(): T | false {
@@ -90,12 +114,14 @@ export function useValidation<T extends Record<string, unknown>>(
       : false;
   }
 
+  watch(form, validate, { deep: true, immediate: true });
+
   return {
     form,
     isValid,
     isInvalid,
     isLoading,
-    validation,
+    validation: readonly(validation),
     validate,
     submit,
     reset,

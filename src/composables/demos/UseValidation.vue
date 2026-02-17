@@ -10,20 +10,23 @@ const {
   validation,
   validate,
   submit,
-} = useValidation({ firstName: '', lastName: '', }, {
-  firstName: [
-    (value) => value.trim().length >= 1 || 'This field is required',
-    (value) => value.trim().length >= 3 || `You entered ${3 - value.length} less then 3 characters`,
-    (value) =>
-      new Promise((resolve) =>
-        setTimeout(() => {
-          const isValid: boolean = value.trim().length <= 6;
-          resolve(isValid ? true : `You entered ${6 - value.length} more than 6 characters`);
-        }, 3000),
-      ),
-  ],
-  lastName: [(value) => value.trim().length >= 1 || 'This field is also required'],
-});
+} = useValidation(
+  { firstName: '', lastName: '' },
+  {
+    firstName: [
+      (value) => value.trim().length >= 1 || 'This field is required',
+      (value) => value.trim().length >= 3 || `You entered ${3 - value.length} less then 3 characters`,
+      (value) =>
+        new Promise((resolve) =>
+          setTimeout(() => {
+            const isValid: boolean = value.trim().length <= 6;
+            resolve(isValid ? true : `You entered ${6 - value.length} more than 6 characters`);
+          }, 3000),
+        ),
+    ],
+    lastName: [(value) => value.trim().length >= 1 || 'This field is also required'],
+  },
+);
 
 function onSubmit(): void {
   const payload = submit();
@@ -42,35 +45,56 @@ function onSubmit(): void {
     <h3>
       Form isValid: {{ isValid }}
     </h3>
+
     <p v-if="isLoading">
-      ...validating
+      Validating...
     </p>
 
     <div>
       <label>
         <span>Firstname</span>
-        <input v-model="form.firstName" />
+        <input
+          v-model="form.firstName"
+          :class="{ valid: validation.firstName.isValid }"
+        />
       </label>
-      <p>
-        {{ validation.firstName.isValid }} {{ validation.firstName.message }}
+      <p :class="{ invalid: validation.firstName.isInvalid }">
+        {{ validation.firstName.isPending ? 'Pending...' : validation.firstName.message }}
       </p>
     </div>
     <div>
       <label>
         <span>Lastname</span>
-        <input v-model="form.lastName" />
+        <input
+          v-model="form.lastName"
+          :class="{ valid: validation.lastName.isValid }"
+        />
       </label>
-      <p>
-        {{ validation.lastName.isValid }} {{ validation.lastName.message }}
+      <p :class="{ invalid: validation.lastName.isInvalid }">
+        {{ validation.lastName.isPending ? 'Pending...' : validation.lastName.message }}
       </p>
     </div>
     <div>
-      <button @click="validate">
-        Validate
-      </button>
-      <button @click="onSubmit">
-        Submit
-      </button>
+      <button @click="validate">Validate</button>
+      <button @click="onSubmit">Submit</button>
     </div>
   </form>
 </template>
+
+<style lang="scss">
+input.valid {
+  border: 1px solid green;
+}
+
+input.invalid {
+  color: red;
+}
+
+p.valid {
+  color: green;
+}
+
+p.invalid {
+  color: red;
+}
+</style>
