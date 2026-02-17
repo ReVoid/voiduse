@@ -6,12 +6,12 @@ import {
 
 import {
   useLoading,
-} from '../composables';
+} from '../index.ts';
 
 import type {
   Validators,
   ValidationInfo,
-} from '../composables/useValidation.types.ts';
+} from './useValidation.types.ts';
 
 import {
   first,
