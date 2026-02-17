@@ -1,29 +1,16 @@
 <script setup lang="ts">
 import {
-  ref,
-} from 'vue';
-
-import {
   useValidation,
 } from '../../composables';
 
-type Form = {
-  firstName: string;
-  lastName: string;
-};
-
-const form = ref<Form>({
-  firstName: '',
-  lastName: '',
-});
-
 const {
+  form,
   isValid,
   isLoading,
   validation,
   validate,
   submit,
-} = useValidation(form, {
+} = useValidation({ firstName: '', lastName: '', }, {
   firstName: [
     (value) => value.trim().length >= 1 || 'This field is required',
     (value) => value.trim().length >= 3 || `You entered ${3 - value.length} less then 3 characters`,
@@ -58,6 +45,7 @@ function onSubmit(): void {
     <p v-if="isLoading">
       ...validating
     </p>
+    {{ form }}
     <div>
       <label>
         <span>Firstname</span>

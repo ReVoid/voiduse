@@ -1,7 +1,7 @@
 import {
-  type MaybeRef,
+  ref,
+  type Ref,
   computed,
-  unref,
 } from 'vue';
 
 import {
@@ -23,9 +23,11 @@ import {
 
 
 export function useValidation<T extends Record<string, unknown>>(
-  form: MaybeRef<T>,
+  schema: T,
   validators: Validators<T>,
 ) {
+  const form = ref<T>(schema) as Ref<T>;
+
   type FieldName = keyof typeof validators;
 
   const {
@@ -39,7 +41,7 @@ export function useValidation<T extends Record<string, unknown>>(
     const fieldNames = Object.keys(validators) as FieldName[];
 
     return fieldNames.reduce<ValidationOutput>((output, name) => {
-      const value = unref(form)[name];
+      const value = form.value[name];
 
       const outputs = validators[name].map((validator) => validator(value));
 
@@ -74,11 +76,12 @@ export function useValidation<T extends Record<string, unknown>>(
 
   function submit(): T | false {
     return isValid.value
-      ? unref(form)
+      ? form.value
       : false;
   }
 
   return {
+    form,
     isValid,
     isInvalid,
     isLoading,
