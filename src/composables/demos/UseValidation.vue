@@ -45,7 +45,7 @@ function onSubmit(): void {
     <p v-if="isLoading">
       ...validating
     </p>
-    {{ form }}
+
     <div>
       <label>
         <span>Firstname</span>

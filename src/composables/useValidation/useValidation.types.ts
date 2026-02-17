@@ -17,6 +17,7 @@ export type ValidationInfo = {
   message: string;
   isValid: boolean;
   isInvalid: boolean;
+  isPending: boolean;
 }
 
 export type Mode = 'Lazy' | 'Instant';

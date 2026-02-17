@@ -19,6 +19,7 @@ import {
 
 import {
   isString,
+  isBoolean,
 } from '@sniptt/guards';
 
 
@@ -26,26 +27,35 @@ export function useValidation<T extends Record<string, unknown>>(
   schema: T,
   validators: Validators<T>,
 ) {
-  const form = ref<T>(schema) as Ref<T>;
-
-  type FieldName = keyof typeof validators;
-
   const {
     isLoading,
   } = useLoading();
 
+  type FieldName = keyof typeof validators;
+
   type ValidationOutput = Record<FieldName, ValidationInfo>
 
-  // TODO: Remove type unsafe code
-  const validation = computed<ValidationOutput>(() => {
-    const fieldNames = Object.keys(validators) as FieldName[];
+  const form = ref<T>(schema) as Ref<T>;
 
-    return fieldNames.reduce<ValidationOutput>((output, name) => {
+  const keys = computed<FieldName[]>(() => Object.keys(validators) as FieldName[]);
+
+  const validation = computed<ValidationOutput>(() => {
+    return keys.value.reduce<ValidationOutput>((output, name) => {
       const value = form.value[name];
 
       const outputs = validators[name].map((validator) => validator(value));
 
-      const isValid: boolean = outputs.every((v) => v === true)
+      const isValid: boolean = outputs.every((v) => {
+        if (isBoolean(v)) {
+          return v;
+        }
+
+        if (isString(v)) {
+          return false;
+        }
+
+        // TODO: Implement promise resolving
+      });
 
       const message: string = first(outputs.filter(isString)) ?? '';
 
@@ -53,6 +63,7 @@ export function useValidation<T extends Record<string, unknown>>(
         [name]: {
           isValid,
           isInvalid: !isValid,
+          isPending: false, // TODO: Implement it
           message,
         },
       });
@@ -60,8 +71,7 @@ export function useValidation<T extends Record<string, unknown>>(
   });
 
   const isValid = computed<boolean>(() => {
-    const fieldNames = Object.keys(validation.value) as FieldName[];
-    return fieldNames.every((name) => validation.value[name].isValid);
+    return keys.value.every((name) => validation.value[name].isValid);
   });
 
   const isInvalid = computed<boolean>(() => !isValid.value);
