@@ -7,12 +7,13 @@ import {
 } from 'vue';
 
 import {
-  isObject,
   isUndefined,
   isNull,
 } from '@sniptt/guards';
 
-import { merge } from 'lodash-es';
+import {
+  mergeWith,
+} from 'lodash-es';
 
 type ConsistentOutput<T> = T extends object
   ? Required<T>
@@ -91,17 +92,13 @@ export function useDefault<T>(defaultValue: MaybeRef<ConsistentOutput<T>>) {
    * ```
    */
   function update(payload: MaybeRef<Partial<T>>): void {
-    if (isObject(payload)) {
-      _item.value = merge({}, unref(defaultValue), payload);
-      return;
-    }
+    mergeWith(defaultValue, unref(payload), (before, after, key: keyof typeof defaultValue) => {
+      if (isUndefined(after) || isNull(after)) {
+        return defaultValue[key];
+      }
 
-    if (isUndefined(payload) || isNull(payload)) {
-      _item.value = unref(defaultValue);
-      return;
-    }
-
-    _item.value = payload;
+      return after;
+    });
   }
 
   /**
