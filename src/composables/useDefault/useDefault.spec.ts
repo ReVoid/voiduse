@@ -7,23 +7,37 @@ import {
 import { useDefault } from './useDefault';
 
 describe(useDefault.name, () => {
-  test('Initialize with complex value', () => {
-    const DEFAULT_VALUE = {
-      name: 'Unknown',
-      salary: 0,
-    };
+  test.each([
+    {
+      payload: 0,
+      expected: 0,
+    },
+    {
+      payload: -1,
+      expected: -1,
+    },
+    {
+      payload: 'Homer Simpson',
+      expected: 'Homer Simpson',
+    },
+    {
+      payload: [] as string[],
+      expected: [] as string[],
+    },
+    {
+      payload: { name: 'Marge Simpson', age: 34 },
+      expected: { name: 'Marge Simpson', age: 34 },
+    },
+  ])('Initialize with value: $payload', ({ payload, expected }) => {
+    type Value =
+      | string
+      | number
+      | string[]
+      | { name: string; age: number };
 
-    const { item } = useDefault(DEFAULT_VALUE);
+    const { item } = useDefault<Value>(payload);
 
-    expect(item.value).toEqual(DEFAULT_VALUE);
-  });
-
-  test('Initialize with primitive value', () => {
-    const DEFAULT_VALUE: number = 0
-
-    const { item } = useDefault(DEFAULT_VALUE);
-
-    expect(item.value).toEqual(DEFAULT_VALUE);
+    expect(item.value).toEqual(expected);
   });
 
   test('Update with complex payload', () => {
@@ -129,14 +143,22 @@ describe(useDefault.name, () => {
   });
 
   test('Reset to default value', () => {
-    const DEFAULT_VALUE = {
+    type Person = {
+      name: string;
+      age: number;
+      pets: string[];
+    }
+
+    const DEFAULT_VALUE: Person = {
       name: 'Unknown',
-      salary: 0,
+      age: 0,
+      pets: [],
     };
 
-    const PAYLOAD = {
+    const PAYLOAD: Person = {
       name: 'John',
-      salary: 1000,
+      age: 35,
+      pets: ['Dog', 'Cat'],
     };
 
     const {
