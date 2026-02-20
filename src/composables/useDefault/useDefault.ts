@@ -22,6 +22,8 @@ type ConsistentOutput<T> = T extends object
 /**
  * Safe value with default fallback and flexible API.
  *
+ * Implements [Null Object Pattern]{@link https://refactoring.guru/introduce-null-object}.
+ *
  * @example
  * ```ts
  * // Putting default values
