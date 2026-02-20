@@ -40,6 +40,61 @@ describe(useDefault.name, () => {
     expect(item.value).toEqual(expected);
   });
 
+  test.each([
+    {
+      initial: 0,
+      payload: 1,
+      expected: false,
+    },
+    {
+      initial: 0,
+      payload: 0,
+      expected: true,
+    },
+    {
+      initial: 'Unknown',
+      payload: 'Homer Simpson',
+      expected: false,
+    },
+    {
+      initial: 'Unknown',
+      payload: 'Unknown',
+      expected: true,
+    },
+    {
+      initial: [] as string[],
+      payload: ['Something new'],
+      expected: false,
+    },
+    {
+      initial: [] as string[],
+      payload: [] as string[],
+      expected: true,
+    },
+    {
+      initial: { name: 'Unknown', age: -1 },
+      payload: { name: 'Lisa Simpson', age: 8 },
+      expected: false,
+    },
+    {
+      initial: { name: 'Unknown', age: -1 },
+      payload: { name: 'Lisa Simpson', age: 8 },
+      expected: false,
+    },
+  ])('Check if current value equals to default value: $initial = $payload', ({ initial, payload, expected }) => {
+    type Value =
+      | string
+      | number
+      | string[]
+      | { name: string; age: number };
+
+    const { item, isDefault } = useDefault<Value>(initial);
+
+    item.value = payload;
+
+    expect(isDefault.value).toBe(expected);
+  });
+
   test('Update with complex payload', () => {
     const DEFAULT_VALUE = {
       name: 'Unknown',
