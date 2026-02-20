@@ -19,6 +19,7 @@ const person = ref<Person>({
 
 const {
   item,
+  isDefault,
   reset,
   update,
 } = useDefault({
@@ -33,11 +34,15 @@ const {
       <strong>
         Update with:
       </strong>
+      <span>
+        {{ person }}
+      </span>
       <form novalidate @submit.prevent>
         <input v-model="person.name" type="text">
         <input v-model.number="person.age" type="number">
       </form>
     </div>
+
     <p>
       <strong>
         Item:
@@ -46,11 +51,23 @@ const {
         {{ item }}
       </span>
     </p>
+
+    <p>
+      <strong>
+        IsDefault:
+      </strong>
+      <span>
+        {{ isDefault }}
+      </span>
+    </p>
+
+
+
     <button @click="item = person">
       Update
     </button>
-    <button @click="update({ name: 'Jane' })">
-      Update partially
+    <button @click="update({ name: person.name })">
+      Update partially (name)
     </button>
     <button @click="reset">
       Reset
@@ -58,7 +75,7 @@ const {
 
     <!-- An error here! See `useDefault` docs. -->
     <!--
-    <button @click="item = { lastName: 'Doe' }">
+    <button @click="item = { name: 'John Doe' }">
       Update partially issue
     </button>
     -->
