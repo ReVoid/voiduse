@@ -12,6 +12,7 @@ import {
 } from '@sniptt/guards';
 
 import {
+  isEqual,
   mergeWith,
 } from 'lodash-es';
 
@@ -73,6 +74,26 @@ export function useDefault<T>(defaultValue: MaybeRef<ConsistentOutput<T>>) {
     },
   });
 
+  /**
+   * Checks if the value is equal to the default one.
+   *
+   * @example
+   * ```ts
+   * const { item, isDefault } = useDefault({ name: 'Unknown', salary: 0 });
+   *
+   * item.value = { name: 'John Doe', salary: 7000 };
+   *
+   * isDefault.value; // false
+   *
+   * item.value = { name: 'Unknown', salary: 0 };
+   *
+   * isDefault.value; // true
+   * ```
+   */
+  const isDefault = computed<boolean>(() => {
+    return isEqual(item.value, defaultValue);
+  });
+
   // TODO: Check with array type
   /**
    * Helper to avoid `computed` {@link https://github.com/vuejs/language-tools/issues/5793 issue} in `template` section.
@@ -121,6 +142,7 @@ export function useDefault<T>(defaultValue: MaybeRef<ConsistentOutput<T>>) {
 
   return {
     item,
+    isDefault,
     reset,
     update,
   };
