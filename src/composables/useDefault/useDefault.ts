@@ -115,7 +115,7 @@ export function useDefault<T>(defaultValue: MaybeRef<ConsistentOutput<T>>) {
    * ```
    */
   function update(payload: MaybeRef<Partial<T>>): void {
-    _item.value = mergeWith(defaultValue, unref(payload), (before, after, key: keyof typeof defaultValue) => {
+    _item.value = mergeWith({}, defaultValue, unref(payload), (before, after, key: keyof typeof defaultValue) => {
       if (isUndefined(after) || isNull(after)) {
         return defaultValue[key];
       }
