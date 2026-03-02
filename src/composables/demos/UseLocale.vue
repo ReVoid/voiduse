@@ -4,20 +4,42 @@ import {
 } from '../../composables';
 
 const {
-  locales,
   locale,
+  locales,
+  language,
+  languages,
+  isAvailable,
 } = useLocale();
 </script>
 <template>
   <article>
-    <h2>UseLocale</h2>
+    <h2>useLocale</h2>
     <select v-model="locale">
-      <option v-for="locale in locales" :key="locale" :value="locale">
+      <option
+        v-for="locale in locales"
+        :key="locale"
+        :value="locale"
+      >
         {{ locale }}
       </option>
     </select>
+    <select v-model="language">
+      <option
+        v-for="language in languages"
+        :key="language"
+        :value="language"
+      >
+        {{ language }}
+      </option>
+    </select>
     <p>
-      Selected: {{ locale }}
+      Selected locale: {{ locale }}
+    </p>
+    <p>
+      Selected language: {{ language }}
+    </p>
+    <p>
+      Is available: {{ isAvailable(locale) }}
     </p>
   </article>
 </template>
