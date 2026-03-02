@@ -4,10 +4,6 @@ import {
   watch,
 } from 'vue';
 
-import {
-  useLoading,
-} from '../../composables';
-
 import type {
   Locale,
   Locales,
@@ -29,13 +25,14 @@ import {
   uniq,
 } from 'lodash-es';
 
-const _locale = ref<Locale>('en-US');
 
-const _language = ref<Language>('en');
 
 // TODO: Complete implementation.
 // TODO: Add locale fallback map
-export function useLocale() {
+export function useLocale(initial: Locale | Language = 'en-US') {
+  const _locale = ref<Locale>(toLocale(initial));
+  const _language = ref<Language>(toLanguage(initial));
+
   /**
    *  Current locale.
    *
@@ -102,9 +99,6 @@ export function useLocale() {
     return locales.value.map(toRegion);
   });
 
-  // TODO: Make it global
-  const { isLoading } = useLoading();
-
   /**
    * Checks whether a given locale or language exists in the list of available locales.
    *
@@ -152,7 +146,6 @@ export function useLocale() {
     languages,
     region,
     regions,
-    isLoading,
     isAvailable,
   };
 }
