@@ -29,14 +29,64 @@ import {
   uniq,
 } from 'lodash-es';
 
+const _locale = ref<Locale>('en-US');
+
+const _language = ref<Language>('en');
+
 // TODO: Complete implementation.
+// TODO: Add locale fallback map
 export function useLocale() {
-  const locale = ref<Locale>('en-US');
+  /**
+   *  Current locale.
+   *
+   *  @example
+   *  ```ts
+   *  const { locale } = useLocale();
+   *
+   *  locale.value; // "en-US"
+   *  ````
+   */
+  const locale = computed<Locale, Locale | Language>({
+    get() {
+      return _locale.value;
+    },
+    set(value) {
+      _locale.value = toLocale(value);
+      _language.value = toLanguage(value);
+    },
+  });
 
   const locales = ref<Locales>(LOCALES);
 
-  const language = computed<Language>(() => {
-    return toLanguage(locale.value);
+  /**
+   * Current language.
+   *
+   * @default
+   * "ru"
+   *
+   * @example
+   * ```ts
+   * const { language, locale } = useLocale();
+   *
+   * // Changing by language
+   * language.value = "en";
+   *
+   * // Changing by locale
+   * language.value = "en-US";
+   *
+   * // Changes will be reflected to locale
+   * language.value; // "en"
+   * locale.value; // "en-US"
+   * ```
+   */
+  const language = computed<Language, Language | Locale>({
+    get() {
+      return _language.value;
+    },
+    set(value) {
+      _language.value = toLanguage(value);
+      _locale.value = toLocale(value);
+    },
   });
 
   const languages = computed<Languages>(() => {
