@@ -1,92 +1,134 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-
 import {
-  usePagination,
-} from '../../composables';
+  ref,
+  watch,
+  onMounted,
+} from 'vue';
 
-const pagination = usePagination<number>((page, size) => {
-  const DATA: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+import { usePagination } from '../../composables';
+
+const {
+  items,
+  page,
+  size,
+  sizes,
+  total,
+  count,
+  hasPages,
+  hasPrev,
+  hasNext,
+  isFirst,
+  isLast,
+  isLoading,
+  prev,
+  next,
+  first,
+  last,
+  append,
+  refresh,
+} = usePagination<number>((page, size) => {
+  // Backend-like dummy.
   return new Promise((resolve) => {
+    const DATA: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter((v) => v <= filter.value);
+
     setTimeout(() => {
       resolve({
         items: DATA.slice((page - 1) * size, page * size),
         page,
         size,
-        total: DATA.length
+        total: DATA.length,
       });
     }, 1000);
   });
 });
 
+const filter = ref<number>(11);
+
+watch(filter, () => {
+  first();
+});
+
 onMounted(() => {
-  pagination.first();
+  first();
 });
 </script>
 
 <template>
   <p>
-    Items: {{ pagination.items.value }}
+    Items: {{ items }}
   </p>
+
   <p>
-    Selected {{ pagination.page.value }}
+    Shown {{ `${items.length} of ${total}` }}
   </p>
-  <p>
-    Shown {{ `${pagination.items.value.length} of ${pagination.total.value}` }}
-  </p>
-  <nav v-if="pagination.hasPages.value">
+
+  <label>
+    Max number
+    <input
+      v-model.number="filter"
+      type="number"
+    />
+  </label>
+
+  <nav v-if="hasPages">
     <button
-        :disabled="pagination.isFirst.value"
-        @click="pagination.first"
+      :disabled="isFirst"
+      @click="first"
     >
       First
     </button>
+
     <button
-        :disabled="!pagination.hasPrev.value"
-        @click="pagination.prev">
+      :disabled="!hasPrev"
+      @click="prev"
+    >
       Prev
     </button>
+
     <button
-        v-for="page in pagination.count.value"
-        :key="page"
-        :disabled="page === pagination.page.value"
-        @click="pagination.page.value = page"
+      v-for="pageNumber in count"
+      :key="pageNumber"
+      :disabled="pageNumber === page"
+      @click="page = pageNumber"
     >
-      {{ page }}
+      {{ pageNumber }}
     </button>
+
     <button
-        :disabled="!pagination.hasNext.value"
-        @click="pagination.next"
-    >
+      :disabled="!hasNext"
+      @click="next">
       Next
     </button>
+
     <button
-        :disabled="pagination.isLast.value"
-        @click="pagination.last"
-    >
+      :disabled="isLast"
+      @click="last">
       Last
     </button>
+
     <button
-        :disabled="!pagination.hasNext.value"
-        @click="pagination.append"
+      :disabled="!hasNext"
+      @click="append"
     >
       Append
     </button>
-    <button @click="pagination.refresh">
+
+    <button @click="refresh">
       Refresh
     </button>
 
-    <select v-model="pagination.size.value">
+    <select v-model="size">
       <option
-          v-for="size in pagination.sizes.value"
-          :key="size"
-          :value="size"
+        v-for="size in sizes"
+        :key="size"
+        :value="size"
       >
         {{ size }}
       </option>
     </select>
   </nav>
-  <p v-if="pagination.isLoading.value">
+
+  <p v-if="isLoading">
     Loading...
   </p>
 </template>
