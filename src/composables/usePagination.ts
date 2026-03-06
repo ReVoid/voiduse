@@ -117,13 +117,13 @@ export function usePagination<T>(source: Source<T>, options?: Options) {
         return hasPages.value && page.value === count.value;
     });
 
-    async function prev(): Promise<void> {
+    function prev(): void {
         if (hasPrev.value) {
            page.value = page.value - 1;
         }
     }
 
-    async function next(): Promise<void> {
+    function next(): void {
         if (hasNext.value) {
           page.value = page.value + 1;
         }
