@@ -6,3 +6,4 @@ export { useValidation } from './useValidation';
 export { useSize } from './useSize';
 export { useLocale } from './useLocale';
 export { useList } from './useList';
+export { useToggleGroup } from './useToggleGroup';
