@@ -23,6 +23,14 @@ describe('useLoading', () => {
     expect(isLoading.value).toBe(false);
   });
 
+  test('Returns the resolved value of the promise', async () => {
+    const { showUntil } = useLoading();
+
+    const output = await showUntil(Promise.resolve('OK'));
+
+    expect(output).toBe('OK');
+  });
+
   test('Changing state manually is not allowed', async () => {
     const { isLoading } = useLoading();
 
@@ -30,5 +38,5 @@ describe('useLoading', () => {
     isLoading.value = true;
 
     expect(isLoading.value).toBe(false);
-  })
+  });
 });
