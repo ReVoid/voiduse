@@ -38,6 +38,8 @@ function onSubmit(): void {
 
   return console.error('Something went wrong');
 }
+
+validate();
 </script>
 
 <template>

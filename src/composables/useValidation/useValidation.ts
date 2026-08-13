@@ -12,7 +12,10 @@ import {
 
 import type {
   Validators,
+  Validator,
   ValidationInfo,
+  IsAsyncValidators,
+  ValidateReturn,
 } from './useValidation.types.ts';
 
 import {
@@ -24,16 +27,19 @@ import {
 } from '@sniptt/guards';
 
 
-export function useValidation<T extends Record<string, unknown>>(
+export function useValidation<
+  T extends Record<string, unknown>,
+  V extends Validators<T> = Validators<T>,
+>(
   schema: T,
-  validators: Validators<T>,
+  validators: V,
 ) {
   const {
     isLoading,
     showUntil,
   } = useLoading();
 
-  type FieldName = keyof typeof validators;
+  type FieldName = keyof V;
 
   type ValidationOutput = Record<FieldName, ValidationInfo>
 
@@ -64,7 +70,7 @@ export function useValidation<T extends Record<string, unknown>>(
 
   // Promise<never> extends ReturnType<typeof validators[keyof typeof validators][number]> ? Promise<boolean> : boolean
   async function validateField(name: FieldName) {
-    const value = form.value[name];
+    const value = form.value[name as unknown as keyof T];
 
     try {
       validation.value[name].isPending = true;
@@ -73,7 +79,7 @@ export function useValidation<T extends Record<string, unknown>>(
         const output: Array<boolean | string> = [];
 
         for (const validator of validators[name]) {
-          const res = await validator(value);
+          const res = await (validator as Validator<unknown>)(value);
 
           output.push(res);
 
@@ -100,8 +106,16 @@ export function useValidation<T extends Record<string, unknown>>(
     }
   }
 
-  function validate() {
-    keys.value.forEach(validateField);
+  function validate(): ValidateReturn<IsAsyncValidators<T, V>> {
+    const results = keys.value.map(validateField);
+
+    const isAsync = results.some((res) => res instanceof Promise);
+
+    if (isAsync) {
+      return Promise.all(results).then(() => {}) as unknown as ValidateReturn<IsAsyncValidators<T, V>>;
+    }
+
+    return undefined as unknown as ValidateReturn<IsAsyncValidators<T, V>>;
   }
 
   function reset(): void {
