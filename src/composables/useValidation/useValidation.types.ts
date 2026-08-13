@@ -1,8 +1,8 @@
-
 export type Message = string;
- export type Validator<T> = (
-   value: T,
- ) => boolean | Message | Promise<boolean | Message>;
+
+export type Validator<T> = (
+ value: T,
+) => boolean | Message | Promise<boolean | Message>;
 
 export type ValidatorGroup<T> = Validator<T>[];
 
