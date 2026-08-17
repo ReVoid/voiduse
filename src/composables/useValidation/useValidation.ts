@@ -122,10 +122,11 @@ export function useValidation<
     validation.value = VALIDATION_BLANK.value;
   }
 
-  function submit(): T | false {
-    return isValid.value
-      ? form.value
-      : false;
+  // TODO: Maybe I should add smart async inference
+  function submit(): T {
+    validate();
+
+    return form.value;
   }
 
   watch(form, validate, { deep: true, immediate: true });

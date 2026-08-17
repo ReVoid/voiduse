@@ -31,15 +31,13 @@ const {
 function onSubmit(): void {
   const payload = submit();
 
-  if (payload) {
+  if (isValid.value) {
     const output = [payload.firstName, payload.lastName].join(' ');
     return console.log(`${output} has been successfully submitted`);
   }
 
   return console.error('Something went wrong');
 }
-
-validate();
 </script>
 
 <template>
