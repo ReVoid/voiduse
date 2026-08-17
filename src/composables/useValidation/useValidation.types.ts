@@ -1,13 +1,14 @@
 export type Message = string;
 
-export type Validator<T> = (
+export type Validator<T, F> = (
  value: T,
+ form: F,
 ) => boolean | Message | Promise<boolean | Message>;
 
-export type ValidatorGroup<T> = Validator<T>[];
+export type ValidatorGroup<T, F> = Validator<T, F>[];
 
 export type Validators<T extends Record<string, unknown>> = {
-  [K in keyof T]: ValidatorGroup<T[K]>;
+  [K in keyof T]: ValidatorGroup<T[K], T>;
 }
 
 export type ValidationInfo = {

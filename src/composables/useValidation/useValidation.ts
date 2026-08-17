@@ -79,7 +79,7 @@ export function useValidation<
         const output: Array<boolean | string> = [];
 
         for (const validator of validators[name]) {
-          const res = await (validator as Validator<unknown>)(value);
+          const res = await (validator as Validator<unknown, unknown>)(value, form.value);
 
           output.push(res);
 

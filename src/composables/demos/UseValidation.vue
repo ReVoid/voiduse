@@ -1,17 +1,8 @@
 <script setup lang="ts">
-import {
-  useValidation,
-} from '../../composables';
+import { useValidation } from '../../composables';
 
-const {
-  form,
-  isValid,
-  isLoading,
-  validation,
-  validate,
-  submit,
-} = useValidation(
-  { firstName: '', lastName: '' },
+const { form, isValid, isLoading, validation, reset, validate, submit } = useValidation(
+  { firstName: '', lastName: '', age: 30, max: 70 },
   {
     firstName: [
       (value) => value.trim().length >= 1 || 'This field is required',
@@ -25,6 +16,8 @@ const {
         ),
     ],
     lastName: [(value) => value.trim().length >= 1 || 'This field is also required'],
+    age: [(value, form) => value <= form.max || `You entered ${value} which is more than ${form.max}`],
+    max: [() => true], // TODO: Add optional type ;)
   },
 );
 
@@ -42,21 +35,14 @@ function onSubmit(): void {
 
 <template>
   <form novalidate @submit.prevent>
-    <h3>
-      Form isValid: {{ isValid }}
-    </h3>
+    <h3>Form isValid: {{ isValid }}</h3>
 
-    <p v-if="isLoading">
-      Validating...
-    </p>
+    <p v-if="isLoading">Validating...</p>
 
     <div>
       <label>
         <span>Firstname</span>
-        <input
-          v-model="form.firstName"
-          :class="{ valid: validation.firstName.isValid }"
-        />
+        <input v-model="form.firstName" :class="{ valid: validation.firstName.isValid }" />
       </label>
       <p :class="{ invalid: validation.firstName.isInvalid }">
         {{ validation.firstName.isPending ? 'Pending...' : validation.firstName.message }}
@@ -65,16 +51,25 @@ function onSubmit(): void {
     <div>
       <label>
         <span>Lastname</span>
-        <input
-          v-model="form.lastName"
-          :class="{ valid: validation.lastName.isValid }"
-        />
+        <input v-model="form.lastName" :class="{ valid: validation.lastName.isValid }" />
       </label>
       <p :class="{ invalid: validation.lastName.isInvalid }">
         {{ validation.lastName.isPending ? 'Pending...' : validation.lastName.message }}
       </p>
     </div>
+
     <div>
+      <label>
+        <span>Age</span>
+        <input v-model.number="form.age" :class="{ valid: validation.age.isValid }" />
+        <input v-model.number="form.max" type="number" />
+      </label>
+      <p :class="{ invalid: validation.age.isInvalid }">
+        {{ validation.lastName.isPending ? 'Pending...' : validation.age.message }}
+      </p>
+    </div>
+    <div>
+      <button @click="reset">Reset</button>
       <button @click="validate">Validate</button>
       <button @click="onSubmit">Submit</button>
     </div>
