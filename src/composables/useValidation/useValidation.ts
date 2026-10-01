@@ -6,6 +6,8 @@ import {
   watch,
 } from 'vue';
 
+import { isString } from '@sindresorhus/is';
+
 import {
   useLoading,
 } from '../index.ts';
@@ -21,11 +23,6 @@ import type {
 import {
   first,
 } from 'lodash-es';
-
-import {
-  isString,
-} from '@sniptt/guards';
-
 
 export function useValidation<
   T extends Record<string, unknown>,

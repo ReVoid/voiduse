@@ -6,15 +6,15 @@ import {
 } from 'vue';
 
 import {
+  isUndefined,
+  isArray,
+} from '@sindresorhus/is'
+
+import {
   isEqual,
   first as _first,
   last as _last,
 } from 'lodash-es';
-
-import {
-  isArray,
-  isUndefined,
-} from '@sniptt/guards';
 
 type Comparator<T> = (a: T, b: T) => boolean;
 

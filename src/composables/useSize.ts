@@ -8,7 +8,7 @@ import {
 import {
   isString,
   isNumber,
-} from '@sniptt/guards';
+} from '@sindresorhus/is';
 
 type Unit = 'px' | '%' | 'em' | 'rem' | 'vh' | 'vw';
 

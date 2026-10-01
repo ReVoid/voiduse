@@ -7,9 +7,7 @@ import {
   watch,
 } from 'vue';
 
-import {
-  isFunction,
-} from '@sniptt/guards';
+import { isFunction } from '@sindresorhus/is'
 
 import {
   useLoading,

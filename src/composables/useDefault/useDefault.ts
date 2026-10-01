@@ -6,10 +6,7 @@ import {
   type MaybeRef,
 } from 'vue';
 
-import {
-  isUndefined,
-  isNull,
-} from '@sniptt/guards';
+import { isNullOrUndefined } from '@sindresorhus/is'
 
 import {
   isEqual,
@@ -116,7 +113,7 @@ export function useDefault<T>(defaultValue: MaybeRef<ConsistentOutput<T>>) {
    */
   function update(payload: MaybeRef<Partial<T>>): void {
     _item.value = mergeWith({}, defaultValue, unref(payload), (before, after, key: keyof typeof defaultValue) => {
-      if (isUndefined(after) || isNull(after)) {
+      if (isNullOrUndefined(after)) {
         return defaultValue[key];
       }
 
