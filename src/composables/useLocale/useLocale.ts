@@ -4,6 +4,10 @@ import {
   watch,
 } from 'vue';
 
+import {
+  uniq,
+} from 'lodash-es';
+
 import type {
   Locale,
   Locales,
@@ -16,16 +20,6 @@ import type {
 import {
   LOCALES,
 } from './useLocale.constants.ts';
-
-import type {
-  Union,
-} from 'ts-toolbelt';
-
-import {
-  uniq,
-} from 'lodash-es';
-
-
 
 // TODO: Complete implementation.
 // TODO: Add locale fallback map
@@ -114,7 +108,7 @@ export function useLocale(initial: Locale | Language = 'en-US') {
    * isAvailable(null); // false
    * ```
    */
-  function isAvailable(value?: Union.Nullable<string>): boolean {
+  function isAvailable(value?: string | undefined | null): boolean {
     if (!value) {
       return false;
     }
