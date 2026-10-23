@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@sindresorhus/is": "^8.1.0",
+    "@vvo/tzdb": "^6.201.1",
     "lodash-es": "^4.17.23",
     "vue": "^3.5.25"
   },
