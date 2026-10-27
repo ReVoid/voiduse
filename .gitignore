@@ -245,3 +245,4 @@ http-client.private.env.json
 
 #Custom
 .idea/**
+.agents/skills/
