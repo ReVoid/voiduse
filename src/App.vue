@@ -7,6 +7,7 @@ import {
   UseValidation,
   UseSize,
   UseLocale,
+  UseTimeZone,
   UseList,
 } from './composables/demos';
 </script>
@@ -40,6 +41,8 @@ import {
   <UseSize />
 
   <UseLocale />
+
+  <UseTimeZone />
 
   <UseList />
 </template>
