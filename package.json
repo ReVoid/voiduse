@@ -17,7 +17,7 @@
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/",
     "install:skills": "npx skills experimental_install",
-    "generate:time-zones": "node scripts/generate-time-zones.ts"
+    "generate:time-zones": "node src/composables/useTimeZone/scripts/generate-time-zones.ts"
   },
   "dependencies": {
     "@sindresorhus/is": "^8.1.0",

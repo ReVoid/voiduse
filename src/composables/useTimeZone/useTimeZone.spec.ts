@@ -2,6 +2,7 @@ import {
   describe,
   test,
   expect,
+  expectTypeOf,
 } from 'vitest';
 
 import { ref } from 'vue';
@@ -16,28 +17,68 @@ import { TIME_ZONE_NAMES, TIME_ZONES } from './useTimeZone.constants';
 
 describe(useTimeZone.name, () => {
   test('Defaults to UTC', () => {
-    const { timeZone } = useTimeZone();
+    const { timeZone, offset } = useTimeZone();
 
     expect(timeZone.value).toBe('UTC');
+
+    expect(offset.value).toBe(0);
   });
 
   test.each([
     {
-      kind: 'value',
       payload: 'Europe/London' as const,
     },
     {
-      kind: 'ref',
       payload: ref('Europe/London' as const),
     },
     {
-      kind: 'getter',
       payload: () => 'Europe/London' as const,
     },
-  ])('Initialize with $kind', ({ payload }) => {
+  ])('Initialize with $payload', ({ payload }) => {
     const { timeZone } = useTimeZone(payload);
 
     expect(timeZone.value).toBe('Europe/London');
+  });
+
+  test.each([
+    {
+      payload: null,
+    },
+    {
+      payload: undefined,
+    },
+    {
+      payload: ref(null),
+    },
+    {
+      payload: ref(undefined),
+    },
+    {
+      payload: () => null,
+    },
+    {
+      payload: () => undefined,
+    },
+  ])('Falls back to UTC when initialized with $payload', ({ payload }) => {
+    const { timeZone, offset } = useTimeZone(payload);
+
+    expect(timeZone.value).toBe('UTC');
+    expect(offset.value).toBe(0);
+  });
+
+  test('Keeps time zone non-nullable when initialized with nullable value', () => {
+    const initial = ref<TimeZoneName | null | undefined>(null);
+
+    const { timeZone } = useTimeZone(initial);
+
+    expectTypeOf(timeZone.value).toEqualTypeOf<TimeZoneName>();
+  });
+
+  test('Falls back to UTC when initialized with unknown time zone', () => {
+    // @ts-expect-error - testing
+    const { timeZone } = useTimeZone('America/Gotham_City');
+
+    expect(timeZone.value).toBe('UTC');
   });
 
   test('Reads initial value only once', () => {
@@ -59,6 +100,21 @@ describe(useTimeZone.name, () => {
   });
 
   test.each([
+    undefined,
+    null,
+    '',
+    'America/Gotham_City',
+  ])('Ignores blank or invalid assignment: $0', (payload ) => {
+    const { timeZone, offset } = useTimeZone('Asia/Kolkata');
+
+    // @ts-expect-error - testing
+    timeZone.value = payload;
+
+    expect(timeZone.value).toBe('Asia/Kolkata');
+    expect(offset.value).toBe(330);
+  });
+
+  test.each([
     {
       payload: 'UTC',
       expected: true,
@@ -76,7 +132,7 @@ describe(useTimeZone.name, () => {
       expected: false,
     },
     {
-      payload: 'Mars/Olympus',
+      payload: 'America/Gotham_City',
       expected: false,
     },
     {
