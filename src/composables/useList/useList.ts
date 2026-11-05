@@ -7,14 +7,20 @@ import {
 
 import {
   isUndefined,
+  isPlainObject,
   isArray,
+  isFunction,
 } from '@sindresorhus/is'
 
 import {
   isEqual,
+  cloneDeep,
+  mergeWith,
   first as _first,
   last as _last,
 } from 'lodash-es';
+
+import type { PartialDeep } from 'type-fest';
 
 type Comparator<T> = (a: T, b: T) => boolean;
 
@@ -43,8 +49,12 @@ export function useList<T>(comparator: Comparator<T> = isEqual) {
       ? values
       : [values];
 
+    if (payload.length === 0) {
+      return;
+    }
+
     items.value = items.value.filter((item) => {
-      return payload.some((value) => !comparator(item, value));
+      return !payload.some((value) => comparator(item, value));
     });
   }
 
@@ -82,9 +92,24 @@ export function useList<T>(comparator: Comparator<T> = isEqual) {
     return comparator(last.value, value);
   }
 
-  // TODO: Implement flexible update
-  function update(): void {
-    throw new Error('useList().update() is not implemented yet.');
+  function update(target: T, payload: PartialDeep<T> | ((target: T) => T)): void {
+    const index = items.value.findIndex((item) => comparator(item, target));
+
+    if (index === -1) {
+      return;
+    }
+
+    const current = items.value[index]!;
+
+    const value = isFunction(payload)
+      ? payload(current)
+      : isPlainObject(current) && isPlainObject(payload)
+        ? mergeWith({}, current, payload, (_: unknown, after: unknown) => {
+          return isArray(after) ? cloneDeep(after) : undefined;
+        })
+        : payload;
+
+    items.value.splice(index, 1, value as T);
   }
 
   return {
